@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "magicwand:item/flashlight_on"
+  },
+  "match": {
+    "items": "magicwand:flashlight_on"
+  },
+  "luminance": 15,
+  "water_sensitive": false
+}
