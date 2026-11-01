@@ -1,9 +1,78 @@
-# MagicMod
+# Сборка модов от ЗПР/24 
 
-## Setup
+Документация [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) 
 
-For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
+При подключении к серверу добавь свой Никнейм (в build.gradle в секцию loom добавить runs)
 
-## License
+programArg "Sanya" - в кавычках Sanya заменить на СВОЙ
+```
+loom {
+	splitEnvironmentSourceSets()
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+	mods {
+		"magicmod" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+    runs {
+        client {
+            programArg "--username"
+            programArg "Sanya"
+        }
+    }
+}
+```
+
+
+## Версии
+
+- Minecraft: 26.3
+- Fabric Loader: 0.19.5
+- Fabric Loom: 1.17-SNAPSHOT
+- Fabric API: 0.162.0+26.3
+- Gradle: 9.7.1
+- Java : 25 (JetBrains Runtime 25.0.4)
+
+
+
+### Магическая палочка
+
+- Создаёт огонь при использовании 🔥 
+
+Игрок нажимает ПКМ палочкой и палочка выпускает огненный снаряд вперёд.
+
+- Shift + ПКМ призывает чёрного котика 🐈‍⬛
+
+Выдать палочку в чате 🪄
+
+`/give @s magicwand:magic_wand 1`
+
+### Фонарик
+
+Добавляет в игру фонарик. Нажми ПКМ, чтобы переключить его (вкл \ выкл)
+
+Выдать фонарик в чате 🔦
+
+`/give @s magicwand:flashlight_off 1`
+
+### Черная дыра
+
+`/voidcraft create` - создаёт чёрную дыру перед игроком
+
+`/give @s voidcraft:void_core` - - получить Ядро Пустоты 
+
+
+1. Создание чёрной дыры специальным предметом — Ядро Пустоты
+2. Создание чёрной дыры командой /voidcraft create
+3. Притяжение мобов, игроков, выпавших предметов и блоков
+4. Постепенное поглощение объектов (радиус 8 блоков)
+5. Счётчик поглощённых объектов
+6. Взрыв после поглощения 20 объектов (радиус взрыва 4 блока)
+
+- Каждый тик чёрная дыра ищет объекты в радиусе 8 блоков.
+- Объекты получают дополнительную скорость в направлении центра.
+- Игроки притягиваются, но не поглощаются.
+- Мобы и выпавшие предметы поглощаются при приближении.
+- Раз в секунду разрушаются блоки в центральной области.
+- После 20 поглощений происходит взрыв.
