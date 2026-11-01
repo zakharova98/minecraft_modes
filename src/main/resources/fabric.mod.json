@@ -16,10 +16,12 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.magicwand.MagicWandMod"
+			"com.example.magicwand.MagicWandMod",
+            "com.example.voidmod.VoidCraft"
 		],
 		"client": [
-			"com.example.magicmod.client.MagicModClient"
+			"com.example.magicmod.client.MagicModClient",
+            "com.example.voidmod.client.VoidCraftClient"
 		]
 	},
 	"mixins": [
