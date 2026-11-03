@@ -1,5 +1,6 @@
 package com.example.magicwand;
 
+import com.example.unicorn.UnicornEntities;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -68,5 +69,7 @@ public class MagicWandMod implements ModInitializer {
                     tab.accept(MAGIC_WAND);
                     tab.accept(FLASHLIGHT_OFF);
                 });
+
+        UnicornEntities.initialize();
     }
 }

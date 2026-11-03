@@ -21,7 +21,8 @@
 		],
 		"client": [
 			"com.example.magicmod.client.MagicModClient",
-            "com.example.voidmod.client.VoidCraftClient"
+            "com.example.voidmod.client.VoidCraftClient",
+            "com.example.unicorn.client.UnicornClient"
 		]
 	},
 	"mixins": [
