@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.world.item.CreativeModeTabs;
+import com.example.unicorn.network.UnicornSprintNetworking;
 
 public class MagicWandMod implements ModInitializer {
     public static final String MOD_ID = "magicwand";
@@ -71,5 +72,6 @@ public class MagicWandMod implements ModInitializer {
                 });
 
         UnicornEntities.initialize();
+        UnicornSprintNetworking.initialize();
     }
 }

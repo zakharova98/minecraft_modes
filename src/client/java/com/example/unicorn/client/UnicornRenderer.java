@@ -30,8 +30,12 @@ public class UnicornRenderer extends AbstractHorseRenderer<
     public UnicornRenderer(EntityRendererProvider.Context context) {
         super(
                 context,
-                new HorseModel(context.bakeLayer(ModelLayers.HORSE)),
-                new BabyHorseModel(context.bakeLayer(ModelLayers.HORSE_BABY))
+                new UnicornModel(
+                        context.bakeLayer(UnicornModel.LAYER)
+                ),
+                new UnicornBabyModel(
+                        context.bakeLayer(UnicornBabyModel.LAYER)
+                )
         );
         this.addLayer(
                 new SimpleEquipmentLayer<>(
@@ -39,7 +43,7 @@ public class UnicornRenderer extends AbstractHorseRenderer<
                         context.getEquipmentRenderer(),
                         EquipmentClientInfo.LayerType.HORSE_SADDLE,
                         state -> state.saddle,
-                        new EquineSaddleModel(
+                        new UnicornSaddleModel(
                                 context.bakeLayer(ModelLayers.HORSE_SADDLE)
                         ),
                         null

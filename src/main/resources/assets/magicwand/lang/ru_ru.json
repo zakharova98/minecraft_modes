@@ -1,3 +1,5 @@
 {
-  "item.magicwand.magic_wand": "Магическая палочка"
+  "item.magicwand.magic_wand": "Магическая палочка",
+  "key.category.magicwand.unicorn": "Единорог",
+  "key.magicwand.unicorn_sprint": "Магический бег"
 }
