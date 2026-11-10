@@ -24,8 +24,7 @@ loom {
     runs {
         client {
 			programArg "--username"
-			programArg "Kolja3000"
-			vmArg "-Xmx2G"
+			programArg "username"
         }
     }
 }
