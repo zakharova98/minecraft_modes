@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " S ",
+    "BBB",
+    " LI"
+  ],
+  "key": {
+    "S": "minecraft:spyglass",
+    "B": "minecraft:copper_block",
+    "L": "minecraft:lever",
+    "I": "minecraft:copper_ingot"
+  },
+  "result": {
+    "id": "magicwand:sniper_rifle",
+    "count": 1
+  }
+}

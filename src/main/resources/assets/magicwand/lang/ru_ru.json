@@ -1,5 +1,7 @@
 {
   "item.magicwand.magic_wand": "Магическая палочка",
   "key.category.magicwand.unicorn": "Единорог",
-  "key.magicwand.unicorn_sprint": "Магический бег"
+  "key.magicwand.unicorn_sprint": "Магический бег",
+  "item.magicwand.sniper_rifle": "Снайперская винтовка",
+  "item.magicwand.sniper_ammo": "Патрон для снайперки"
 }

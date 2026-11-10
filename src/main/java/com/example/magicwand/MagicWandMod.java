@@ -73,5 +73,46 @@ public class MagicWandMod implements ModInitializer {
 
         UnicornEntities.initialize();
         UnicornSprintNetworking.initialize();
+
+        CreativeModeTabEvents
+                .modifyOutputEvent(CreativeModeTabs.COMBAT)
+                .register(tab -> {
+                    tab.accept(SNIPER_RIFLE);
+                    tab.accept(SNIPER_AMMO);
+                });
     }
+
+    // Снайперская винтовка
+    public static final ResourceKey<Item> SNIPER_RIFLE_KEY =
+            ResourceKey.create(
+                    Registries.ITEM,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "sniper_rifle")
+            );
+
+    public static final Item SNIPER_RIFLE = Registry.register(
+            BuiltInRegistries.ITEM,
+            SNIPER_RIFLE_KEY,
+            new SniperRifleItem(
+                    new Item.Properties()
+                            .setId(SNIPER_RIFLE_KEY)
+                            .stacksTo(1)
+            )
+    );
+
+    // Патроны для снайперки
+    public static final ResourceKey<Item> SNIPER_AMMO_KEY =
+            ResourceKey.create(
+                    Registries.ITEM,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "sniper_ammo")
+            );
+
+    public static final Item SNIPER_AMMO = Registry.register(
+            BuiltInRegistries.ITEM,
+            SNIPER_AMMO_KEY,
+            new Item(
+                    new Item.Properties()
+                            .setId(SNIPER_AMMO_KEY)
+                            .stacksTo(64)
+            )
+    );
 }

@@ -23,8 +23,9 @@ loom {
 
     runs {
         client {
-            programArg "--username"
-            programArg "Sanya"
+			programArg "--username"
+			programArg "Kolja3000"
+			vmArg "-Xmx2G"
         }
     }
 }
