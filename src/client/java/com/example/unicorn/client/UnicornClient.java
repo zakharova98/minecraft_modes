@@ -22,8 +22,6 @@ public class UnicornClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        SniperScopeClient.init();
-
         // Регистрируем модели единорога
         ModelLayerRegistry.registerModelLayer(
                 UnicornModel.LAYER,

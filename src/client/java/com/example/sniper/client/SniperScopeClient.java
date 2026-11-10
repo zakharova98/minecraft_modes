@@ -1,4 +1,4 @@
-package com.example.unicorn.client;
+package com.example.sniper.client;
 
 import com.example.magicwand.MagicWandMod;
 
