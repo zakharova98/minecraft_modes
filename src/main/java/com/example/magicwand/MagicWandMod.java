@@ -1,5 +1,8 @@
 package com.example.magicwand;
 
+import com.example.golem.GolemEntities;
+import com.example.golem.GolemItems;
+import com.example.golem.menu.GolemMenus;
 import com.example.unicorn.UnicornEntities;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
@@ -62,6 +65,12 @@ public class MagicWandMod implements ModInitializer {
             )
     );
 
+    public static final ResourceKey<Item> GOLEM_CORE =
+            ResourceKey.create(
+                    Registries.ITEM,
+                    Identifier.fromNamespaceAndPath("golem", "golem_core")
+            );
+
     @Override
     public void onInitialize() {
         CreativeModeTabEvents
@@ -80,6 +89,10 @@ public class MagicWandMod implements ModInitializer {
                     tab.accept(SNIPER_RIFLE);
                     tab.accept(SNIPER_AMMO);
                 });
+
+        GolemItems.initialize();
+        GolemEntities.initialize();
+        GolemMenus.initialize();
     }
 
     // Снайперская винтовка
