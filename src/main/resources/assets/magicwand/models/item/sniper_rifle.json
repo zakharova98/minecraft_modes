@@ -1,1 +1,6 @@
-{ "parent": "minecraft:item/handheld", "textures": { "layer0": "magicwand:item/sniper_rifle" } }
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "magicwand:item/sniper_rifle"
+  }
+}

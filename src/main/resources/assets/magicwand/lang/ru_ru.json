@@ -3,5 +3,17 @@
   "key.category.magicwand.unicorn": "Единорог",
   "key.magicwand.unicorn_sprint": "Магический бег",
   "item.magicwand.sniper_rifle": "Снайперская винтовка",
-  "item.magicwand.sniper_ammo": "Патрон для снайперки"
+  "item.magicwand.sniper_ammo": "Патрон для снайперки",
+  "item.magicwand.teleport_item": "Магический Телепорт",
+  "subtitles.magicwand.sniper_shot": "Выстрел из снайперской винтовки",
+  "subtitles.magicwand.sniper_bolt_open": "Затвор открывается",
+  "subtitles.magicwand.sniper_bolt_close": "Затвор закрывается",
+  "item.magicwand.flashlight_off": "Фонарик (выкл.)",
+  "item.magicwand.flashlight_on": "Фонарик (вкл.)",
+  "item.golem.golem_core": "Ядро голема",
+  "item.golem.golem_configurator": "Конфигуратор голема",
+  "entity.magicwand.unicorn": "Единорог",
+  "entity.golem.storage_golem": "Голем-хранитель",
+  "menu.golem.storage_golem": "Хранилище голема",
+  "gui.golem.sort": "Сортировать"
 }

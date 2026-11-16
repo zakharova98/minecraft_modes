@@ -1,0 +1,20 @@
+{
+  "sniper_shot": {
+    "sounds": [
+      "magicwand:sniper_shot"
+    ],
+    "subtitle": "subtitles.magicwand.sniper_shot"
+  },
+  "sniper_bolt_open": {
+    "sounds": [
+      "magicwand:sniper_bolt_open"
+    ],
+    "subtitle": "subtitles.magicwand.sniper_bolt_open"
+  },
+  "sniper_bolt_close": {
+    "sounds": [
+      "magicwand:sniper_bolt_close"
+    ],
+    "subtitle": "subtitles.magicwand.sniper_bolt_close"
+  }
+}

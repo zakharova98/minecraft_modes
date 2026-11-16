@@ -1,4 +1,4 @@
-package com.example.magicmod.mixin;
+package com.example.golem.magicmod.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

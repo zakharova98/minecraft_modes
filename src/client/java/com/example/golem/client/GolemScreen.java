@@ -30,7 +30,7 @@ public class GolemScreen extends AbstractContainerScreen<GolemMenu> {
         super.init();
 
         Button sortButton = Button.builder(
-                Component.literal("Сортировать"),
+                Component.translatable("gui.golem.sort"),
                 button -> {
                     if (this.minecraft.gameMode != null) {
                         this.minecraft.gameMode.handleInventoryButtonClick(
