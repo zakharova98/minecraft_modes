@@ -12,25 +12,14 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 
 public class SniperScopeClient {
 
-    private static final Identifier SCOPE =
-            Identifier.fromNamespaceAndPath(
-                    MagicWandMod.MOD_ID,
-                    "textures/gui/sniper_scope.png"
-            );
-
-    // Угол обзора при прицеливании (в настройках минимум 30)
     private static final int ZOOM_FOV = 30;
-
     private static boolean zooming = false;
     private static int savedFov = 70;
 
-    // Прицеливаемся: винтовка в руке, зажата ЛКМ, вид от первого лица
     private static boolean isAiming(Minecraft mc) {
         return mc.player != null
                 && mc.options.getCameraType().isFirstPerson()
@@ -39,11 +28,8 @@ public class SniperScopeClient {
     }
 
     public static void init() {
-
-        // Приближение: меняем FOV на время прицеливания
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             boolean aiming = isAiming(client);
-
             if (aiming && !zooming) {
                 savedFov = client.options.fov().get();
                 client.options.fov().set(ZOOM_FOV);
@@ -54,7 +40,6 @@ public class SniperScopeClient {
             }
         });
 
-        // Если закрыли игру во время прицеливания, возвращаем FOV
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             if (zooming) {
                 client.options.fov().set(savedFov);
@@ -62,45 +47,77 @@ public class SniperScopeClient {
             }
         });
 
-        // С винтовкой в руке ЛКМ не бьёт сущностей и не ломает блоки
         AttackEntityCallback.EVENT.register((player, level, hand, entity, hitResult) ->
-                player.getMainHandItem().is(MagicWandMod.SNIPER_RIFLE)
-                        ? InteractionResult.FAIL
-                        : InteractionResult.PASS);
+                player.getMainHandItem().is(MagicWandMod.SNIPER_RIFLE) ? InteractionResult.FAIL : InteractionResult.PASS);
 
         AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) ->
-                player.getMainHandItem().is(MagicWandMod.SNIPER_RIFLE)
-                        ? InteractionResult.FAIL
-                        : InteractionResult.PASS);
+                player.getMainHandItem().is(MagicWandMod.SNIPER_RIFLE) ? InteractionResult.FAIL : InteractionResult.PASS);
 
-        // Рамка прицела
         HudElementRegistry.attachElementBefore(
                 VanillaHudElements.CHAT,
-                Identifier.fromNamespaceAndPath(MagicWandMod.MOD_ID, "sniper_scope"),
+                net.minecraft.resources.Identifier.fromNamespaceAndPath(MagicWandMod.MOD_ID, "sniper_scope"),
                 SniperScopeClient::render
         );
     }
 
     private static void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
         Minecraft mc = Minecraft.getInstance();
-        if (!isAiming(mc)) {
-            return;
-        }
+        if (!isAiming(mc)) return;
 
         int w = mc.getWindow().getGuiScaledWidth();
         int h = mc.getWindow().getGuiScaledHeight();
+        int cx = w / 2;
+        int cy = h / 2;
 
-        int size = h;               // квадрат по высоте экрана
-        int x = (w - size) / 2;
+        // 1. ЧЕРНАЯ МАСКА С КРУГОМ (радиус 40)
+        int radius = 40;
+        int maskColor = 0xFF000000;
 
-        // Чёрные полосы по бокам
-        graphics.fill(0, 0, x, h, 0xFF000000);
-        graphics.fill(x + size, 0, w, h, 0xFF000000);
+        for (int y = 0; y < h; y++) {
+            int dy = y - cy;
+            if (Math.abs(dy) > radius) {
+                graphics.fill(0, y, w, y + 1, maskColor);
+            } else {
+                int dx = (int) Math.sqrt(radius * radius - dy * dy);
+                graphics.fill(0, y, cx - dx, y + 1, maskColor);
+                graphics.fill(cx + dx, y, w, y + 1, maskColor);
+            }
+        }
 
-        // Сам прицел
-        graphics.blit(
-                RenderPipelines.GUI_TEXTURED, SCOPE,
-                x, 0, 0, 0, size, size, size, size
-        );
+        // 2. РИСУЕМ ПРИЦЕЛ (РАДИУС 40)
+        int colorLine = 0xFF000000;
+        int thick = 2;
+        int thickLen = 15;
+        int gap = 4;
+
+        // Толстые линии
+        graphics.fill(cx - radius, cy - thick/2, cx - radius + thickLen, cy + thick/2, colorLine);
+        graphics.fill(cx + radius - thickLen, cy - thick/2, cx + radius, cy + thick/2, colorLine);
+        graphics.fill(cx - thick/2, cy - radius, cx + thick/2, cy - radius + thickLen, colorLine);
+        graphics.fill(cx - thick/2, cy + radius - thickLen, cx + thick/2, cy + radius, colorLine);
+
+        // Тонкие линии
+        int thinColor = 0xFF222222;
+        graphics.fill(cx - radius + thickLen, cy, cx - gap, cy + 1, thinColor);
+        graphics.fill(cx + gap, cy, cx + radius - thickLen, cy + 1, thinColor);
+        graphics.fill(cx, cy - radius + thickLen, cx + 1, cy - gap, thinColor);
+        graphics.fill(cx, cy + gap, cx + 1, cy + radius - thickLen, thinColor);
+
+        // Штрихи
+        int tickLen = 4;
+        int tickGap = 8;
+        for (int i = -radius + thickLen; i <= radius - thickLen; i += tickGap) {
+            if (i == 0) continue;
+            graphics.fill(cx + i, cy - tickLen/2, cx + i + 1, cy + tickLen/2, thinColor);
+            graphics.fill(cx - tickLen/2, cy + i, cx + tickLen/2, cy + i + 1, thinColor);
+        }
+
+        // Красная точка
+        graphics.fill(cx - 1, cy - 1, cx + 1, cy + 1, 0xFFFF0000);
+
+        // Блик линзы
+        int glintColor = 0x33FFFFFF;
+        graphics.fill(cx + 15, cy + 15, cx + 25, cy + 17, glintColor);
+        graphics.fill(cx + 17, cy + 13, cx + 27, cy + 15, glintColor);
     }
 }
