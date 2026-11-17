@@ -1,14 +1,11 @@
 {
 	"required": true,
-	"package": "com.example.magicmod.client.mixin",
-	"compatibilityLevel": "JAVA_25",
+	"package": "com.example.magicwand.client.mixin",
+	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"PlayerSkinMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
 	}
 }

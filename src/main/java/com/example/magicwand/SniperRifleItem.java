@@ -1,31 +1,39 @@
 package com.example.magicwand;
 
+import java.util.List;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer; // <--- ДОБАВЬТЕ ЭТУ СТРОКУ
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class SniperRifleItem extends Item {
 
     private static final double RANGE = 100.0;
-    private static final float DAMAGE = 20.0F;
-    private static final int COOLDOWN_TICKS = 40; // 2 секунды
+
+    // Урон «с одного выстрела». Броня режет урон максимум на 80%,
+    // поэтому 1000 убивает практически любого (в том числе игрока в незеритовой броне).
+    private static final float DAMAGE = 1000.0F;
+
+    // Затвор: весь цикл (выстрел, открыть, закрыть) занимает 2 секунды
+    private static final int COOLDOWN_TICKS = 40;
+    private static final int BOLT_OPEN_TICK = 10;   // затвор открывается через 0.5 с
+    private static final int BOLT_CLOSE_TICK = 26;  // и закрывается через 1.3 с
 
     public SniperRifleItem(Properties properties) {
         super(properties);
@@ -48,6 +56,9 @@ public class SniperRifleItem extends Item {
                 return InteractionResult.FAIL;
             }
 
+            // Затвор закрыт на момент выстрела
+            SniperBolt.setBoltOpen(player, false);
+
             Vec3 start = player.getEyePosition();
             Vec3 dir = player.getLookAngle();
             Vec3 end = start.add(dir.scale(RANGE));
@@ -64,23 +75,24 @@ public class SniperRifleItem extends Item {
                     ? end
                     : blockHit.getLocation();
 
-            // Ищем сущность на пути луча
+            // Пуля пробивает насквозь: бьём ВСЕХ, кто стоит на линии выстрела
             AABB box = player.getBoundingBox()
                     .expandTowards(dir.scale(RANGE))
                     .inflate(1.0);
 
-            EntityHitResult hit = ProjectileUtil.getEntityHitResult(
-                    player, start, limit, box,
-                    e -> !e.isSpectator() && e.isPickable(),
-                    RANGE * RANGE
+            List<Entity> targets = level.getEntities(
+                    player, box,
+                    e -> !e.isSpectator() && e.isPickable()
             );
 
-            if (hit != null) {
-                hit.getEntity().hurtServer(
-                        serverLevel,
-                        serverLevel.damageSources().playerAttack(player),
-                        DAMAGE
-                );
+            for (Entity target : targets) {
+                if (target.getBoundingBox().inflate(0.3).clip(start, limit).isPresent()) {
+                    target.hurtServer(
+                            serverLevel,
+                            serverLevel.damageSources().playerAttack(player),
+                            DAMAGE
+                    );
+                }
             }
 
             // След выстрела из частиц
@@ -92,9 +104,9 @@ public class SniperRifleItem extends Item {
                 );
             }
 
+            // Звук выстрела (громкость 3.0 слышна примерно на 48 блоков)
             level.playSound(null, player.blockPosition(),
-                    SoundEvents.FIREWORK_ROCKET_BLAST,
-                    SoundSource.PLAYERS, 2.0F, 0.6F);
+                    ModSounds.SNIPER_SHOT, SoundSource.PLAYERS, 3.0F, 1.0F);
 
             player.getCooldowns().addCooldown(
                     player.getItemInHand(hand), COOLDOWN_TICKS
@@ -103,6 +115,20 @@ public class SniperRifleItem extends Item {
             // Тратим один патрон
             if (!creative) {
                 ammo.shrink(1);
+            }
+
+            // Передёргивание затвора: звук и смена модели
+            if (player instanceof ServerPlayer shooter) {
+                SniperBolt.schedule(shooter, BOLT_OPEN_TICK, p -> {
+                    SniperBolt.setBoltOpen(p, true);
+                    p.level().playSound(null, p.blockPosition(),
+                            ModSounds.SNIPER_BOLT_OPEN, SoundSource.PLAYERS, 1.0F, 1.0F);
+                });
+                SniperBolt.schedule(shooter, BOLT_CLOSE_TICK, p -> {
+                    SniperBolt.setBoltOpen(p, false);
+                    p.level().playSound(null, p.blockPosition(),
+                            ModSounds.SNIPER_BOLT_CLOSE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                });
             }
         }
 

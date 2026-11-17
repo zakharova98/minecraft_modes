@@ -1,4 +1,4 @@
-package com.example.magicmod;
+package com.example.golem.magicmod;
 
 import net.fabricmc.api.ModInitializer;
 

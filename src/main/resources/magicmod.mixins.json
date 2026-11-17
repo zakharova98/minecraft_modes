@@ -1,9 +1,8 @@
 {
 	"required": true,
 	"package": "com.example.magicmod.mixin",
-	"compatibilityLevel": "JAVA_25",
+	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
