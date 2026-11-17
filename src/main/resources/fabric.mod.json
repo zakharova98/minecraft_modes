@@ -24,7 +24,8 @@
             "com.example.voidmod.client.VoidCraftClient",
             "com.example.unicorn.client.UnicornClient",
             "com.example.sniper.client.SniperClient",
-            "com.example.golem.client.GolemClient"
+            "com.example.golem.client.GolemClient",
+            "com.example.magicwand.client.PlayerClient"
 		]
 	},
 	"mixins": [
