@@ -1,85 +1,72 @@
 package com.example.magicwand.client;
 
-import com.example.magicwand.network.SkinPayload;
+import com.example.magicwand.network.SkinSyncPayload;
 import com.mojang.blaze3d.platform.NativeImage;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerSkin;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
+/** Хранит кастомные скины всех игроков, которые прислал сервер. Миксин берёт скины отсюда. */
 public class SkinManager {
-    private static final Map<UUID, Identifier> CUSTOM_SKINS = new HashMap<>();
-    private static File pendingSkinFile = null;
+
+    private static final Map<UUID, PlayerSkin> SKINS = new ConcurrentHashMap<>();
 
     public static void init() {
-        ClientPlayNetworking.registerGlobalReceiver(SkinPayload.TYPE, (payload, context) -> {
-            UUID uuid = payload.playerUuid();
-            byte[] bytes = payload.skinBytes();
-
-            try {
-                // Читаем байты как NativeImage
-                NativeImage nativeImage = NativeImage.read(new ByteArrayInputStream(bytes));
-                if (nativeImage != null) {
-                    Identifier textureId = Identifier.fromNamespaceAndPath("magicwand", "skins/" + uuid.toString());
-
-                    context.client().execute(() -> {
-                        // В версии 26.3 конструктор требует String (метку) и NativeImage
-                        DynamicTexture dynamicTexture = new DynamicTexture(() -> "skin_" + uuid, nativeImage);
-                        context.client().getTextureManager().register(textureId, dynamicTexture);
-                        CUSTOM_SKINS.put(uuid, textureId);
-                    });
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (pendingSkinFile != null) {
-                uploadSkin(pendingSkinFile);
-                pendingSkinFile = null;
-            }
-        });
+        ClientPlayNetworking.registerGlobalReceiver(SkinSyncPayload.TYPE, (payload, context) ->
+                context.client().execute(() -> apply(context.client(), payload)));
     }
 
-    public static Identifier getSkin(UUID uuid) {
-        return CUSTOM_SKINS.get(uuid);
+    /** Вызывается миксином при каждой отрисовке игрока, поэтому только быстрый lookup. */
+    public static PlayerSkin getPlayerSkin(UUID uuid) {
+        return SKINS.get(uuid);
     }
 
-    public static void requestUpload(File file) {
-        pendingSkinFile = file;
-    }
-
-    public static void uploadSkin(File file) {
-        try {
-            BufferedImage image = ImageIO.read(file);
-            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-            ImageIO.write(image, "png", baos);
-            byte[] bytes = baos.toByteArray();
-
-            if (bytes.length > 1024 * 1024) {
-                // Используем sendSystemMessage вместо удаленного displayClientMessage
-                Minecraft.getInstance().player.sendSystemMessage(
-                        Component.literal("§cФайл слишком большой (макс 1 МБ)!")
-                );
-                return;
-            }
-
-            UUID myUuid = Minecraft.getInstance().player.getUUID();
-            ClientPlayNetworking.send(new SkinPayload(myUuid, bytes));
-        } catch (Exception e) {
-            e.printStackTrace();
+    /** Сбрасываем всё при выходе из мира, чтобы скины одного сервера не "протекли" на другой. */
+    public static void clear() {
+        if (!SKINS.isEmpty()) {
+            SKINS.clear();
         }
+    }
+
+    private static void apply(Minecraft client, SkinSyncPayload payload) {
+        UUID uuid = payload.playerUuid();
+
+        if (payload.png().length == 0) {
+            SKINS.remove(uuid); // у игрока больше нет кастомного скина
+            return;
+        }
+
+        try {
+            NativeImage image = NativeImage.read(new ByteArrayInputStream(payload.png()));
+            Identifier textureId = Identifier.fromNamespaceAndPath("magicwand", "skins/" + uuid);
+
+            // Повторная регистрация под тем же id закрывает и заменяет старую текстуру
+            DynamicTexture texture = new DynamicTexture(() -> "skin_" + uuid, image);
+            client.getTextureManager().register(textureId, texture);
+
+            SKINS.put(uuid, buildPlayerSkin(textureId, payload.slim()));
+        } catch (IOException | RuntimeException e) {
+            System.err.println("[magicwand] Не удалось применить скин " + uuid + ": " + e);
+        }
+    }
+
+    private static PlayerSkin buildPlayerSkin(Identifier textureId, boolean slim) {
+        ClientAsset.Texture bodyTexture = new ClientAsset.Texture() {
+            @Override public Identifier id() { return textureId; }
+            @Override public Identifier texturePath() { return textureId; }
+        };
+        // WIDE - руки как у Стива (4 пикселя), SLIM - как у Алекс (3 пикселя)
+        PlayerModelType model = slim ? PlayerModelType.SLIM : PlayerModelType.WIDE;
+        return new PlayerSkin(bodyTexture, null, null, model, false);
     }
 }
