@@ -21,6 +21,14 @@ loom {
         }
     }
 
+    runs {
+        client {
+            programArg "--username"
+            programArg project.property("mc_username")
+        }
+    }
+
+
 }
 
 dependencies {
