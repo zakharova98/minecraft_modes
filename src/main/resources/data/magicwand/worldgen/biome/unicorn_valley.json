@@ -1,0 +1,37 @@
+
+{
+  "has_precipitation": true,
+  "temperature": 0.8,
+  "downfall": 0.9,
+
+  "effects": {
+    "water_color": 5759999,
+    "grass_color": 11064331,
+    "foliage_color": 14069487
+  },
+
+  "carvers": [],
+
+  "features": [
+    [], [], [], [], [], [],
+    [], [], [], [], []
+  ],
+
+  "attributes": {
+    "minecraft:gameplay/natural_mob_spawns": {
+      "modifier": "overlay",
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "creature": [
+            {
+              "type": "magicwand:unicorn",
+              "weight": 30,
+              "count": 2
+            }
+          ]
+        }
+      }
+    }
+  }
+}
