@@ -7,7 +7,11 @@ import com.example.unicorn.UnicornEntities;
 import com.example.unicorn.network.UnicornSprintNetworking;
 
 import com.example.magicwand.network.SkinPayload;
-import com.example.magicwand.command.SkinCommand;
+import com.example.magicwand.network.SkinSyncPayload;
+import com.example.magicwand.network.SkinUploadPayload;
+import com.example.magicwand.skin.SkinServer;
+import com.example.magicwand.dynlight.DynamicLights;
+import com.example.magicwand.dynlight.DynamicLightCommand;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -174,8 +178,13 @@ public class MagicWandMod implements ModInitializer {
         GolemMenus.initialize();
 
         // --- ИНИЦИАЛИЗАЦИЯ СЕТИ И КОМАНД ---
-        SkinPayload.register();
-        SkinPayload.registerServer();
+        SkinSyncPayload.register();
+        SkinUploadPayload.register();
+        SkinServer.init();
         SkinCommand.register();
+
+        // --- ДИНАМИЧЕСКИЙ СВЕТ (встроенный, без сторонних модов) ---
+        DynamicLights.init();
+        DynamicLightCommand.register();
     }
 }

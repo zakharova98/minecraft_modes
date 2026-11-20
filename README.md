@@ -2,32 +2,41 @@
 
 Документация [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) 
 
-При подключении к серверу добавь свой Никнейм (в build.gradle в секцию loom добавить runs)
+## Ник и скин у каждого свой
 
-programArg "Sanya" - в кавычках Sanya заменить на СВОЙ
+**1. Ник.** Ник определяет UUID игрока, поэтому у каждого он должен быть свой. Не правь `build.gradle` - у каждого в личном файле
+`~/.gradle/gradle.properties` (Windows: `C:\Users\<ты>\.gradle\gradle.properties`) добавь строку:
+
 ```
-loom {
-	splitEnvironmentSourceSets()
-
-	mods {
-		"magicmod" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
-		}
-	}
-    runs {
-        client {
-            programArg "--username"
-            programArg "Sanya"
-        }
-    }
-}
+mc_username=Sanya
 ```
 
-Чтобы поменять скин:
+**2. Скин.** Положи свой PNG (64x64, подходит и старый 64x32) в
 
-run → config → magicwand → player_skin.png
+`<папка запуска игры>/config/magicwand/player_skin.png` (при запуске из IDEA это `run/config/magicwand/player_skin.png`).
 
+Скин загрузится на сервер при входе в мир, а если заменить файл прямо во время игры - обновится сам в течение секунды.
+Сервер запоминает скины (`config/magicwand/server_skins/` у того, кто держит сервер) и показывает их всем, в том числе зашедшим позже.
+
+> Файл `run/` **не должен** лежать в git - иначе у всех будет один и тот же скин. Если он уже закоммичен: `git rm -r --cached run`
+
+**3. Руки (Стив / Алекс).** По умолчанию определяются автоматически по самому скину. Принудительно:
+
+- `/skin model slim` - тонкие руки (Алекс)
+- `/skin model wide` - обычные руки (Стив)
+- `/skin model auto` - снова по файлу
+- `/skin info` - что сохранено, `/skin reset` - убрать свой скин
+
+## Динамический свет
+
+Предмет в любой руке освещает всё вокруг игрока (как в OptiFine) - факелы, фонари, светокамень, лава, фонарик мода и т.д.
+Работает на сервере, поэтому свет видят все игроки и ставить сторонние моды (LambDynamicLights) **не нужно**.
+
+- `/dynlight on` / `/dynlight off` - включить / выключить
+- Список предметов и яркость: `config/magicwand/dynamic_light.txt` (после правки `/dynlight reload`)
+
+Технически: сервер двигает за игроком невидимый блок `minecraft:light`. При выходе игрока и остановке сервера блоки убираются,
+а после аварийного закрытия игры убираются при следующем запуске.
 
 ## Версии
 
