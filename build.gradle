@@ -24,7 +24,7 @@ loom {
     runs {
         client {
             programArg "--username"
-            programArg "username"
+            programArg "TEOMY"
         }
     }
 }

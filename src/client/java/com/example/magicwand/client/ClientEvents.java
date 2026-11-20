@@ -11,7 +11,7 @@ public class ClientEvents {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player != null && !sentThisSession) {
                 // Ищем файл скина при заходе в мир
-                File skinFile = new File("config/magicwand/player_skin.png");
+                File skinFile = new File("config/magicwand/TEOMY.png");
                 if (skinFile.exists()) {
                     SkinManager.requestUpload(skinFile);
                     sentThisSession = true;
