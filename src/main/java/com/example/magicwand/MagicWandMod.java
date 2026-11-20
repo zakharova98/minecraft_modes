@@ -6,7 +6,7 @@ import com.example.golem.menu.GolemMenus;
 import com.example.unicorn.UnicornEntities;
 import com.example.unicorn.network.UnicornSprintNetworking;
 
-import com.example.magicwand.network.SkinPayload;
+import com.example.magicwand.command.SkinCommand;
 import com.example.magicwand.network.SkinSyncPayload;
 import com.example.magicwand.network.SkinUploadPayload;
 import com.example.magicwand.skin.SkinServer;
