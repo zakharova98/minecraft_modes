@@ -1,11 +1,12 @@
 {
-	"required": true,
-	"package": "com.example.magicwand.client.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"PlayerSkinMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "com.example.magicwand.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "PlayerSkinMixin",
+    "GrabberArmsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

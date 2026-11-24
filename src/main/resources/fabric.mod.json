@@ -1,44 +1,44 @@
 {
-	"schemaVersion": 1,
-	"id": "magicwand",
-	"version": "${version}",
-	"name": "MagicMod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/magicmod/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.example.magicwand.MagicWandMod",
-            "com.example.voidmod.VoidCraft"
-		],
-		"client": [
-			"com.example.magicmod.client.MagicModClient",
-            "com.example.voidmod.client.VoidCraftClient",
-            "com.example.unicorn.client.UnicornClient",
-            "com.example.sniper.client.SniperClient",
-            "com.example.golem.client.GolemClient",
-            "com.example.magicwand.client.PlayerClient"
-		]
-	},
-	"mixins": [
-		"magicmod.mixins.json",
-		{
-			"config": "magicmod.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.19.5",
-		"minecraft": "~26.3",
-		"java": ">=25",
-		"fabric-api": "*"
-	}
+  "schemaVersion": 1,
+  "id": "magicwand",
+  "version": "${version}",
+  "name": "MagicMod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/magicmod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.example.magicwand.MagicWandMod",
+      "com.example.voidmod.VoidCraft"
+    ],
+    "client": [
+      "com.example.magicmod.client.MagicModClient",
+      "com.example.voidmod.client.VoidCraftClient",
+      "com.example.unicorn.client.UnicornClient",
+      "com.example.sniper.client.SniperClient",
+      "com.example.golem.client.GolemClient",
+      "com.example.magicwand.client.PlayerClient"
+    ]
+  },
+  "mixins": [
+    "magicmod.mixins.json",
+    {
+      "config": "magicmod.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
 }

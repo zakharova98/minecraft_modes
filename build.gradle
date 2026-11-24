@@ -24,11 +24,9 @@ loom {
     runs {
         client {
             programArg "--username"
-            programArg project.property("mc_username")
+            programArg "Kolja3000"
         }
     }
-
-
 }
 
 dependencies {
